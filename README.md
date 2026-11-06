@@ -1,0 +1,33 @@
+# dock-precision-landing-gazebo
+
+Quadcopter dock station and ArUco-based centering/precision landing in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
+
+#![demo](docs/demo.gif)
+
+## What's inside
+- `dock_model`: dock with two side walls and flaps (revolute joints, `JointPositionController` on `/dock/left/cmd` and `/dock/right/cmd`), ArUco marker on the base
+- `arucotag1`: ArUco marker model
+- `detect_aruco.py`: marker detection from the gimbal camera stream (GStreamer, UDP 5600)
+
+## Status
+- [x] Dock model v1/v2
+- [x] ArUco detection
+- [x] Centering over the marker
+- [x] Precision landing estimation (own implementation)
+
+## Notes
+Detection failed with a black or gray base and worked once the marker sat on a white plate. Contrast matters.
+
+## Requirements
+Ubuntu 22.04, Gazebo Harmonic, ArduPilot SITL + ardupilot_gazebo plugin, Python 3, OpenCV (with `aruco`), pymavlink
+
+## Run
+```bash
+export GZ_SIM_RESOURCE_PATH=$PWD/models:$PWD/worlds:$GZ_SIM_RESOURCE_PATH
+gz sim -r worlds/dock_world.sdf
+sim_vehicle.py -v ArduCopter --model JSON ...
+python3 scripts/detect_aruco.py
+```
+
+## License
+MIT. World derived from the ArduPilot Gazebo iris runway world.
