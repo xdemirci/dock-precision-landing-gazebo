@@ -1,0 +1,7 @@
+python3 gen_dock.py --h 3                         # dock_model.sdf (ayak 3 m)
+python3 gen_dock.py --h 5 --ped-w 3               # ayak 3x3 m
+python3 gen_dock.py --h 7 --out ~/models/dock_model/model.sdf
+
+
+python3 gen_dock.py --h 1 --mark-h 0.3     # 30 cm kaide
+python3 gen_dock.py --h 1 --mark-h 0.35
