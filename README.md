@@ -4,7 +4,9 @@ https://github.com/user-attachments/assets/34badff9-970c-49cb-85ec-bd321d4e8954
 [dock_flap.webm](https://github.com/user-attachments/assets/cf2b7023-6117-4d6c-90e3-a2a608a8477d)
 
 # dock-precision-landing-gazebo
-
+**************************************************
+README WILL BE REVISED SOON.
+**************************************************
 Quadcopter dock station and ArUco-based centering/precision landing in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
 
 #![demo](docs/demo.gif)
