@@ -46,6 +46,8 @@ GIMBAL = [
 ]
 GIMBAL_RATE = 150          # PWM/s (tam stick)
 GIMBAL_MIN, GIMBAL_MAX = 1100, 1900
+# roll 0, pitch -90 (nadir), yaw 0  ->  MNT1 pitch -135..45 araliginda 1300 = -90
+GIMBAL_NADIR = {6: 1500, 7: 1300, 8: 1500}
 
 # Sadece vx,vy,vz + yaw_rate kullan (pos, accel, yaw ignore)
 VEL_TYPE_MASK = 0b010111000111
@@ -121,7 +123,7 @@ class GazeboF310GCS:
 
         # --- Durum ---
         self.vel = {s["key"]: 0.0 for s in STICKS}          # filtrelenmiş hız komutları
-        self.gimbal = {g["ch"]: 1500 for g in GIMBAL}       # gimbal PWM (açı)
+        self.gimbal = dict(GIMBAL_NADIR)                    # gimbal PWM (açı), açılışta nadir
         self.gimbal_mode = False                            # RB: 0 = hız, 1 = gimbal
         self.takeoff_until = 0.0                            # takeoff süresince velocity susar
 
@@ -326,6 +328,11 @@ class GazeboF310GCS:
         self.update_status()
         print(f" Gimbal modu: {'AKTİF (RB=1)' if self.gimbal_mode else 'KAPALI, hız modu (RB=0)'}")
 
+    def gimbal_nadir(self):
+        self.gimbal = dict(GIMBAL_NADIR)
+        self.update_status()
+        print(" Gimbal NADIR (aşağı)")
+
     # ==========================================
     # BUTON OKUMA
     # ==========================================
@@ -358,6 +365,8 @@ class GazeboF310GCS:
             self.toggle_gimbal()
         if pressed("LB", btn(4)):       # LB    -> DISARM
             self.disarm()
+        if pressed("BACK", btn(6)):     # Back  -> gimbal nadir
+            self.gimbal_nadir()
         if pressed("START", btn(7)):    # Start -> ARM
             self.arm()
         if pressed("A", btn(0)):        # A     -> TAKEOFF
@@ -420,6 +429,7 @@ class GazeboF310GCS:
         self.status.config(
             text=f"{mname}/{ctl}  RB={int(self.gimbal_mode)} [{mode}]  "
                  f"G6:{int(g[6])} G7:{int(g[7])} G8:{int(g[8])}"
+                 f"{'  NADIR' if g == GIMBAL_NADIR else ''}"
         )
 
     # ==========================================

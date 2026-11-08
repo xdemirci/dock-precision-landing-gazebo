@@ -1,0 +1,41 @@
+classDiagram
+  class camera {
+  }
+  class config {
+  }
+  class controller {
+  }
+  class detector {
+  }
+  class estimator {
+  }
+  class hud {
+  }
+  class main {
+  }
+  class mission {
+  }
+  class pose {
+  }
+  class selftest {
+  }
+  class vehicle {
+  }
+  main --> camera
+  main --> config
+  main --> controller
+  main --> detector
+  main --> estimator
+  main --> hud
+  main --> mission
+  main --> pose
+  main --> vehicle
+  mission --> vehicle
+  selftest --> config
+  selftest --> controller
+  selftest --> detector
+  selftest --> estimator
+  selftest --> hud
+  selftest --> mission
+  selftest --> pose
+  selftest --> vehicle

@@ -1,0 +1,123 @@
+classDiagram
+  class CamModel {
+    D : ndarray
+    K : ndarray
+    cx
+    cy
+    h
+    w
+    angles(pt)
+  }
+  class Camera {
+    cap
+    close()
+    read(timeout)
+  }
+  class Controller {
+    cfg
+    ve : float
+    vn : float
+    vz : float
+    reset(vn, ve)
+    step(dt, phase, tracking, en, ee, h, yaw_err, yaw_align)
+  }
+  class Detection {
+    center : tuple
+    corners : ndarray
+    good : bool
+    id : int
+    locked : bool
+    pnp_ok : bool
+    reproj : float
+    side_px : float
+    tilt : float
+    tvec : ndarray
+    yaw : float
+  }
+  class Hud {
+    N_ROWS : int
+    cfg
+    fs
+    pad : int
+    panel_h
+    row_h : int
+    overlay(disp, det, scale, cam)
+    render(disp, i)
+  }
+  class LandingSequencer {
+    ALIGN : str
+    DESCEND : str
+    DONE : str
+    FINAL : str
+    IDLE : str
+    LAND : str
+    TOUCH : str
+    airborne : bool
+    cfg
+    failed : bool
+    final : bool
+    msg : str
+    phase : str
+    t_disarm : float
+    t_still : NoneType
+    t_touch : NoneType
+    tries : int
+    reset()
+    update(now, running, armed, landed, h, vd, err, tracking)
+  }
+  class MarkerDetector {
+    cfg
+    streak : int
+    process(gray)
+  }
+  class PosVelEKF {
+    P : ndarray
+    x : ndarray
+    fuse_pos(pos, pos_var)
+    init(pos, pos_var, vel, vel_var)
+    nis(pos, pos_var)
+    predict(dt, dvel, dvel_noise)
+  }
+  class TargetFilter {
+    LOST_REINIT_S : float
+    NIS_GATE : float
+    f : list
+    ok : bool
+    rejected : int
+    t_last : float
+    t_pred : float
+    pos()
+    predict(now)
+    update(now, tn, te, sigma)
+  }
+  class Vehicle {
+    armed : NoneType
+    d : float
+    e : float
+    guided
+    landed : int
+    m : CSVReader, DFReader_binary, DFReader_text, mavmcast, mavtcpin, mavudp, mavuds, mavwebsocket_client
+    mode : int
+    mode_name
+    n : float
+    pitch : float
+    pos_ok : bool
+    rng : NoneType
+    roll : float
+    t_rng : float
+    vd : float
+    ve : float
+    vn : float
+    yaw : float
+    poll()
+    rng_ok(now)
+    send_disarm(force)
+    send_vel_ned(vn, ve, vz, yaw_rate)
+    set_mode(name)
+  }
+  class YawFilter {
+    alpha : float
+    value : NoneType
+    reset()
+    update(ang)
+  }
