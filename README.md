@@ -1,13 +1,7 @@
 
+https://github.com/user-attachments/assets/34badff9-970c-49cb-85ec-bd321d4e8954
 
-https://github.com/user-attachments/assets/5ca7af52-cdfd-446f-985d-3ea453b09b7a
-
-
-
-[dock_flap_test.webm](https://github.com/user-attachments/assets/9af74342-30e5-4168-8617-8f6afef13ad9)
-
-
-https://github.com/user-attachments/assets/bb9f285d-4894-4a67-b6a7-a2c7bf2709e6
+[dock_flap.webm](https://github.com/user-attachments/assets/cf2b7023-6117-4d6c-90e3-a2a608a8477d)
 
 # dock-precision-landing-gazebo
 
