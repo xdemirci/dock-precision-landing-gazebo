@@ -16,3 +16,4 @@ Görevi başlatmak için SPACE, sabit yaw(kuzey) için "y", çıkmak için "q" b
 
 Yükseklik (h) = marker düzlemine yükseklik. Kaynak: --h-src ekf (z - --dock-h) | rng | pnp.
 Yakında (h<3 m) marker kaybolursa kare `lost_HHMMSS.png` olarak kaydedilir.
+<img width="1127" height="803" alt="Screenshot from 2026-11-09 20-29-46" src="https://github.com/user-attachments/assets/65bd8c35-4738-4c03-9c91-2e25ec5ae262" />
