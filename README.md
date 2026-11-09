@@ -1,14 +1,13 @@
 https://github.com/user-attachments/assets/9e075b9d-5362-4bec-83c0-95256a364532
-
-[dock_station_control.webm](https://github.com/user-attachments/assets/69bd8937-65e1-4284-bab2-405a4166ce5a)
-
-https://github.com/user-attachments/assets/e52dd124-1be6-479d-8eb0-c0106da4e078
+[sample_dock_flap.webm](https://github.com/user-attachments/assets/131b41e0-590c-4a33-b58d-ae51f04e3069)
+[sample_dock_all_flap.webm](https://github.com/user-attachments/assets/ec00ee02-7f35-4f74-9ee9-6c4fed235482)
+[landing_on_aruco_all.webm](https://github.com/user-attachments/assets/5933c292-b72c-4da7-89fa-2a91683e1948)
 
 # Precision Landing on Dock Station in Gazebo
 
 A quadcopter finds an **ArUco marker** with a **downward camera**, centers over it, descends, lands and disarms. The dock has motorized walls and flaps that open and close. Everything runs in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
 
-To remind, ArduPilot's precision landing action is **not used** in this project. The **dock station** model can be builded, configured and changed **on-demand**. One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**. Opening/closing dock station and drone's missions can be tested **together**. The library **OpenCV** and its functions can be tried to achieve best result. **Centering and precision landing algorithms** can be builded and tested in simulation as much as wished. 
+**TO REMIND**, ArduPilot's precision landing action is **not used** in this project. The **dock station** model can be builded, configured and changed **on-demand**. One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**. Opening/closing dock station and drone's missions can be tested **together**. The library **OpenCV** and its functions can be tried to achieve best result. **Centering and precision landing algorithms** can be builded and tested in simulation as much as wished. 
 
 No major changes is needed to test in real after a **properly** working project in the **simulation**. Also it's clear that an onboard companian computer like either Pi or Jetson is **mandatory** for image processing on the drone. Moving this project from simulation(which uses personal computer) to a real onboard computer will not be **challanging** much. The points to take into **consideration** are like **communicating with ground station** to watch the **telemetry** and **view** from camera on-demand. 
 
