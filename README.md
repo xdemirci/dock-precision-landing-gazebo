@@ -6,7 +6,7 @@ https://github.com/user-attachments/assets/e52dd124-1be6-479d-8eb0-c0106da4e078
 
 # Precision Landing on Dock Station in Gazebo
 
-A quadcopter finds a **ArUco marker** with a **downward camera**, centers over it, descends, lands and disarms. The dock has motorized walls and flaps that open and close. Everything runs in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
+A quadcopter finds an **ArUco marker** with a **downward camera**, centers over it, descends, lands and disarms. The dock has motorized walls and flaps that open and close. Everything runs in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
 
 To remind, ArduPilot's precision landing action is **not used** in this project. The **dock station** model can be builded, configured and changed **on-demand**. One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**. Opening/closing dock station and drone's missions can be tested **together**. The library **OpenCV** and its functions can be tried to achieve best result. **Centering and precision landing algorithms** can be builded and tested in simulation as much as wished. 
 
