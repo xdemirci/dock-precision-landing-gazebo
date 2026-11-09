@@ -1,26 +1,18 @@
-# dockland: ArUco ile dock ortalama + inis (kendi PosVel KF)
-
-    cd dockland
-    python3 selftest.py                       # donanimsiz test
-    python3 main.py --conn udp:127.0.0.1:14550      # rangefinder'siz (PnP ile yukseklik)
-
-Tuslar: SPACE start/pause, y yaw hizalama, q cikis.
-
-| dosya | gorev |
+Başlatmak için `main.py`
+Görevi başlatmak için SPACE, sabit yaw(kuzey) için "y", çıkmak için "q" bas.
+| Dosya | Görev |
 |---|---|
-| config.py | tum argumanlar (tek yer) |
+| config.py | tüm argümanlar (tek yer) |
 | camera.py | GStreamer, arka plan thread, hep en son kare |
 | detector.py | ArUco tespiti + geometri/ID/ardisik-kare filtreleri |
 | pose.py | kamera modeli (+kalibrasyon), PnP, aci -> NED donusumleri |
 | estimator.py | PosVelEKF portu + N/E hedef filtresi |
 | vehicle.py | MAVLink durum/komut (bloklamaz) |
-| mission.py | inis faz makinesi (HIZALA -> ALCAL -> SON INIS -> TEMAS -> DISARM) |
+| mission.py | iniş faz makinesi (HİZALA -> ALÇAL -> SON İNİŞ -> TEMAS -> DISARM) |
 | controller.py | P kontrol + hiz/ivme siniri + yaw hizalama |
 | height.py | marker yuksekligini PnP'den ogrenir, marker kaybolunca EKF z ile devam |
 | hud.py | ekran paneli |
-| main.py | hepsini baglayan ince dongu |
+| main.py | hepsini bağlayan ince döngü |
 
-Yukseklik (h) = marker duzlemine yukseklik. Kaynak: --h-src ekf (z - --dock-h) | rng | pnp.
-ArduPilot precland'li surum ayri dosyada: precland_ardu.py
-
-Yakinda (h<3 m) marker kaybolursa kare `lost_HHMMSS.png` olarak kaydedilir (teshis icin).
+Yükseklik (h) = marker düzlemine yükseklik. Kaynak: --h-src ekf (z - --dock-h) | rng | pnp.
+Yakında (h<3 m) marker kaybolursa kare `lost_HHMMSS.png` olarak kaydedilir.
