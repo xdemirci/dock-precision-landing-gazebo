@@ -67,7 +67,6 @@ models/
   dock_model ... _4         four docks with 1, 3, 5, 7 m pedestals
 scripts/
   dock_landing/             main project: detection, estimation, control, mission
-  aruco_detection/          earlier single-file versions and the ArduPilot precland versions
   station_control/          dock generator and the flap control GUI
   xbox_control/             gamepad ground station used to take off and fly manually
 worlds/
@@ -100,9 +99,6 @@ worlds/
 
 | File | Purpose |
 |---|---|
-| `aruco_detection/prec_landing.py` | Earlier single-file version of the same own-implementation landing (KF plus GUIDED velocity). |
-| `aruco_detection/ardu_prec_land.py` | Single file with two modes: own implementation (default) or `--precland`, which sends `LANDING_TARGET` and lets ArduPilot's precision landing finish the job. |
-| `aruco_detection/prec_land_only_ardu.py` | Only ArUco to `LANDING_TARGET`. Estimation, centering and landing all happen inside ArduPilot. |
 | `station_control/gen_dock.py` | Generates a dock `model.sdf`. `--h` pedestal height, `--ped-w` pedestal width, `--mark-h` height of the raised marker pad, `--out` output file. |
 | `station_control/dock_flap_move.py` | Small Tk window with OPEN and CLOSE buttons for each dock and for all docks. Publishes the flap angle (1.2 rad when open) through gz-transport. |
 | `station_control/gen_dock_start` | Example `gen_dock.py` commands. |
