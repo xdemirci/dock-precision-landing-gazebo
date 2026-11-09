@@ -2,7 +2,7 @@ https://github.com/user-attachments/assets/9e075b9d-5362-4bec-83c0-95256a364532
 
 [dock_station_control.webm](https://github.com/user-attachments/assets/69bd8937-65e1-4284-bab2-405a4166ce5a)
 
-https://github.com/user-attachments/assets/d1899a1b-6eec-42b4-9d6f-53f865f775ec
+https://github.com/user-attachments/assets/e52dd124-1be6-479d-8eb0-c0106da4e078
 
 # dock-precision-landing-gazebo
 **************************************************
