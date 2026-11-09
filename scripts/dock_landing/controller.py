@@ -36,7 +36,12 @@ class Controller:
 
         self.vz = 0.0
         if phase in ("DESCEND", "FINAL"):
-            self.vz = float(np.clip(0.3 * max(0.3, h), c.vfinal, 0.6))
+            nominal = float(np.clip(0.3 * max(0.3, h), c.vfinal, 0.6))
+            # huni: hata <= tol tam hiz, hata >= 2*tol durur (ac-kapa yerine surekli).
+            gate = float(np.clip(2.0 - math.hypot(en, ee) / c.tol, 0.0, 1.0))
+            if phase == "FINAL":                      # son inis: marker yokken de devam et
+                gate = max(gate, 0.3)
+            self.vz = nominal * gate
 
         yaw_rate = zero_yaw
         if yaw_align and yaw_err is not None and abs(yaw_err) > math.radians(2):

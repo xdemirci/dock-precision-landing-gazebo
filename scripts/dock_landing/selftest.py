@@ -140,7 +140,7 @@ from height import MarkerHeight
 
 
 class _V:
-    d, roll, pitch, rng = -8.0, 0.0, 0.0, None
+    d, vd, roll, pitch, rng = -8.0, 0.0, 0.0, 0.0, None
 
     def rng_ok(self, now):
         return False
@@ -171,6 +171,40 @@ veh2 = _V()
 veh2.d = -4.4
 h3, _ = MarkerHeight(c2).update(veh2, _D2(), 0.0)
 check("h-scale", abs(h3 - 3.0) < 1e-9, f"{h3:.2f}")
+
+# 5d) Controller: huni (hata buyudukce alcalma yavaslar)
+ct2 = Controller(c)
+v_ok = ct2.step(0.05, "DESCEND", True, 0.05, 0.0, 3.0, None, False)[2]
+v_bad = ct2.step(0.05, "DESCEND", True, 0.40, 0.0, 3.0, None, False)[2]
+v_fin = ct2.step(0.05, "FINAL", True, 0.40, 0.0, 3.0, None, False)[2]
+check("alcalma hunisi", v_ok > 0.5 and v_bad == 0.0 and v_fin > 0.0, f"{v_ok:.2f} / {v_bad:.2f} / FINAL {v_fin:.2f}")
+
+# 5e) Yakin marker + golge: sert golge normal tespiti bozar, golge duzeltme kurtarir
+def shadowed(img, z, factor, cover):
+    side = cam.K[0, 0] * cfg.marker / z
+    mask = np.zeros(img.shape, np.float32)
+    mask[:, : int(cam.cx - side / 2 + cover * side)] = 1.0
+    return (img.astype(np.float32) * (1 - mask * (1 - factor))).astype(np.uint8)
+
+
+close_ok = True
+for z in (1.0, 0.8):
+    dd = None
+    det_c = MarkerDetector(cfg)
+    for _ in range(cfg.min_hits):
+        dd = det_c.process(render((0.0, 0.0, z), 0.3))
+    close_ok &= dd is not None and dd.locked
+    print(f"   yakin z={z}: {'bulundu, boy=%.0f px' % dd.side_px if dd else 'YOK'}")
+check("yakin mesafe tespiti (>= 0.8 m)", close_ok)
+
+sh = shadowed(render((0.0, 0.0, 1.0), 0.3), 1.0, 0.25, 0.5)
+plain = MarkerDetector(cfg)._best(sh)
+dd = None
+det_s = MarkerDetector(cfg)
+for _ in range(cfg.min_hits):
+    dd = det_s.process(sh)
+check("sert golgede tespit (golge duzeltme)", plain is None and dd is not None and dd.deshadowed,
+      f"normal={'bulundu' if plain else 'YOK'}, duzeltmeli={'bulundu' if dd else 'YOK'}")
 
 # 6) HUD derleniyor mu (ekransiz)
 hud = Hud(c)

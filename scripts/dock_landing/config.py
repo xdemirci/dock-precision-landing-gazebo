@@ -49,7 +49,7 @@ def parse_args(argv=None):
     g.add_argument("--no-descend", "--no-land", dest="no_descend", action="store_true", help="sadece ortala, inme")
     g.add_argument("--no-disarm", action="store_true", help="yere inince disarm gonderme")
     g.add_argument("--force-disarm", action="store_true", help="disarm reddedilirse zorla (21196)")
-    g.add_argument("--final-h", type=float, default=1.0, help="bu yukseklik altinda KF ile dik inis (m, marker ustu)")
+    g.add_argument("--final-h", type=float, default=2.0, help="bu yukseklik altinda marker kaybolsa da KF ile dik inis (m, marker ustu)")
     g.add_argument("--final-lost-s", type=float, default=20.0, help="son inista KF ile devam suresi (s)")
     g.add_argument("--vfinal", type=float, default=0.2, help="min inis hizi m/s")
     g.add_argument("--touch-h", type=float, default=0.6, help="yedek temas tespiti yuksekligi (m)")

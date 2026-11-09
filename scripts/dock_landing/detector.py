@@ -1,4 +1,4 @@
-"""Marker tespiti + basit saglamlik filtreleri (geometri, ID, ardisik-kare kilidi)."""
+"""Marker tespiti + basit saglamlik filtreleri (geometri, ID, ardisik-kare kilidi, golge duzeltme)."""
 from dataclasses import dataclass
 
 import cv2
@@ -12,6 +12,7 @@ class Detection:
     center: tuple                  # (cx, cy) px
     side_px: float
     locked: bool = False           # min_hits ardisik karedir goruluyor
+    deshadowed: bool = False       # golge duzeltmeyle bulundu
     # --- pose.solve_pnp doldurur ---
     pnp_ok: bool = False
     good: bool = False             # PnP kalite kapilarindan gecti
@@ -40,9 +41,24 @@ class MarkerDetector:
             self._detect = lambda g: cv2.aruco.detectMarkers(g, dic, parameters=params)[:3]
         self.streak = 0
 
+    @staticmethod
+    def _deshadow(gray):
+        """Arka plan parlakligini morfolojik kapamayla kestirip goruntuyu ona boler: sert golge kenarlari
+        marker'in siyah cercevesine karisip tespiti bozar. (1/4 cozunurlukte ~14 ms; sadece normal tespit
+        basarisizsa calisir.)"""
+        small = cv2.resize(gray, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA)
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (41, 41))      # ~164 px: siyah cerceveden kalin
+        bg = cv2.morphologyEx(small, cv2.MORPH_CLOSE, k)
+        bg = cv2.resize(bg, (gray.shape[1], gray.shape[0]), interpolation=cv2.INTER_LINEAR)
+        return np.clip(gray.astype(np.float32) / np.maximum(bg, 1) * 255, 0, 255).astype(np.uint8)
+
     def process(self, gray):
         """-> Detection | None"""
         det = self._best(gray)
+        if det is None:
+            det = self._best(self._deshadow(gray))
+            if det is not None:
+                det.deshadowed = True
         if det is None:
             self.streak = 0
             return None

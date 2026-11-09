@@ -1,4 +1,0 @@
-gz topic -t /model/dock_model/cmd_vel -m gz.msgs.Twist -p 'linear: {x: 0.3} angular: {z: 0.1}'
-
-gz topic -t /dock/left/cmd -m gz.msgs.Double -p 'data: -1.2' & gz topic -t /dock/right/cmd -m gz.msgs.Double -p 'data: 1.2' & wait
-gz topic -t /dock/left/cmd -m gz.msgs.Double -p 'data: 0' & gz topic -t /dock/right/cmd -m gz.msgs.Double -p 'data: 0' & wait

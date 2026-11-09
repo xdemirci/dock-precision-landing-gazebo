@@ -53,7 +53,7 @@ class Hud:
         rows = []
 
         if det and det.locked and det.good:
-            marker = (f"Marker : KILITLI  id {det.id}", GREEN)
+            marker = (f"Marker : KILITLI  id {det.id}" + (" (golge duz.)" if det.deshadowed else ""), GREEN)
         elif det and det.locked:
             marker = ("Marker : ZAYIF TESPIT (PnP red)", WHITE)
         elif det:

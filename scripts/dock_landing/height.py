@@ -12,6 +12,8 @@ import pose
 class MarkerHeight:
     OUTLIER_M = 1.5          # bu kadar sapan olcum m_alt'i hemen degistirmez
     OUTLIER_N = 20           # ...ama bu kadar ardisik sapma olursa yeni dock kabul edilir
+    ALPHA = 0.05             # ogrenme hizi (kare basina)
+    VD_MAX = 0.3             # m/s: bundan hizli alcalip/yukselirken ogrenme (kamera gecikmesi EKF z ile uyusmaz)
 
     def __init__(self, cfg):
         self.cfg = cfg
@@ -22,9 +24,11 @@ class MarkerHeight:
     def _learn(self, veh, h):
         meas = -veh.d - h
         if not self.known:
-            self.m_alt, self.known = meas, True
+            self.m_alt, self.known = meas, True               # ilk kilitte hemen al
+        elif abs(veh.vd) > self.VD_MAX:
+            return
         elif abs(meas - self.m_alt) < self.OUTLIER_M:
-            self.m_alt += 0.1 * (meas - self.m_alt)
+            self.m_alt += self.ALPHA * (meas - self.m_alt)
             self._out = 0
         else:
             self._out += 1

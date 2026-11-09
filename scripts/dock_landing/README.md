@@ -22,3 +22,5 @@ Tuslar: SPACE start/pause, y yaw hizalama, q cikis.
 
 Yukseklik (h) = marker duzlemine yukseklik. Kaynak: --h-src ekf (z - --dock-h) | rng | pnp.
 ArduPilot precland'li surum ayri dosyada: precland_ardu.py
+
+Yakinda (h<3 m) marker kaybolursa kare `lost_HHMMSS.png` olarak kaydedilir (teshis icin).

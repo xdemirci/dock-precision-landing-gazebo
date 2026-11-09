@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
-<!-- uretildi: gen_dock.py h=7 ped_w=1.8 mark_h=0.35 -->
+<!-- uretildi: gen_dock.py h=3 ped_w=1.8 mark_h=0.35 -->
 <sdf version="1.9">
-  <model name="dock_model">
+  <model name="dock_model_2">
 
     <plugin filename="gz-sim-velocity-control-system"
             name="gz::sim::systems::VelocityControl"/>
 
-    <!-- GOVDE: ayak (link z -7..0) + taban 2x2 + ArUco. Link orijini taban alt yuzu (dunya z=7) -->
+    <!-- GOVDE: ayak (link z -3..0) + taban 2x2 + ArUco. Link orijini taban alt yuzu (dunya z=3) -->
     <link name="body">
-      <pose>0 0 7 0 0 0</pose>
+      <pose>0 0 3 0 0 0</pose>
       <inertial>
-        <pose>0 0 -3.15 0 0 0</pose>
-        <mass>560</mass>
-        <inertia><ixx>2437.87</ixx><iyy>2437.87</iyy><izz>302.4</izz></inertia>
+        <pose>0 0 -1.35 0 0 0</pose>
+        <mass>240</mass>
+        <inertia><ixx>244.8</ixx><iyy>244.8</iyy><izz>129.6</izz></inertia>
       </inertial>
 
       <collision name="pedestal_c">
-        <pose>0 0 -3.5 0 0 0</pose>
-        <geometry><box><size>1.8 1.8 7</size></box></geometry>
+        <pose>0 0 -1.5 0 0 0</pose>
+        <geometry><box><size>1.8 1.8 3</size></box></geometry>
       </collision>
       <visual name="pedestal_v">
-        <pose>0 0 -3.5 0 0 0</pose>
-        <geometry><box><size>1.8 1.8 7</size></box></geometry>
+        <pose>0 0 -1.5 0 0 0</pose>
+        <geometry><box><size>1.8 1.8 3</size></box></geometry>
         <material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material>
       </visual>
 
@@ -75,7 +75,7 @@
     </link>
 
     <link name="left_side">
-      <pose>-1 0 7.05 0 0 0</pose>
+      <pose>-1 0 3.05 0 0 0</pose>
       <inertial>
         <pose>0.2 0 0.45 0 0 0</pose>
         <mass>5</mass>
@@ -115,12 +115,12 @@
     <plugin filename="gz-sim-joint-position-controller-system"
             name="gz::sim::systems::JointPositionController">
       <joint_name>left_joint</joint_name>
-      <topic>/dock/left/cmd</topic>
+      <topic>/dock_2/left/cmd</topic>
       <p_gain>300</p_gain><i_gain>2</i_gain><d_gain>30</d_gain>
     </plugin>
 
     <link name="right_side">
-      <pose>1 0 7.05 0 0 0</pose>
+      <pose>1 0 3.05 0 0 0</pose>
       <inertial>
         <pose>-0.2 0 0.45 0 0 0</pose>
         <mass>5</mass>
@@ -160,13 +160,13 @@
     <plugin filename="gz-sim-joint-position-controller-system"
             name="gz::sim::systems::JointPositionController">
       <joint_name>right_joint</joint_name>
-      <topic>/dock/right/cmd</topic>
+      <topic>/dock_2/right/cmd</topic>
       <p_gain>300</p_gain><i_gain>2</i_gain><d_gain>30</d_gain>
     </plugin>
 
     <!-- front_panel: tek parca panel, alt kenardan mentese (y=1.0) -->
     <link name="front_panel">
-      <pose>0 1.0 7.05 0 0 0</pose>
+      <pose>0 1.0 3.05 0 0 0</pose>
       <inertial>
         <pose>0 -0.025 0.45 0 0 0</pose>
         <mass>4</mass>
@@ -197,13 +197,13 @@
     <plugin filename="gz-sim-joint-position-controller-system"
             name="gz::sim::systems::JointPositionController">
       <joint_name>front_panel_joint</joint_name>
-      <topic>/dock/left/cmd</topic>
+      <topic>/dock_2/left/cmd</topic>
       <p_gain>300</p_gain><i_gain>2</i_gain><d_gain>30</d_gain>
     </plugin>
 
     <!-- back_panel: tek parca panel, alt kenardan mentese (y=-1.0) -->
     <link name="back_panel">
-      <pose>0 -1.0 7.05 0 0 0</pose>
+      <pose>0 -1.0 3.05 0 0 0</pose>
       <inertial>
         <pose>0 0.025 0.45 0 0 0</pose>
         <mass>4</mass>
@@ -234,7 +234,7 @@
     <plugin filename="gz-sim-joint-position-controller-system"
             name="gz::sim::systems::JointPositionController">
       <joint_name>back_panel_joint</joint_name>
-      <topic>/dock/right/cmd</topic>
+      <topic>/dock_2/right/cmd</topic>
       <p_gain>300</p_gain><i_gain>2</i_gain><d_gain>30</d_gain>
     </plugin>
 

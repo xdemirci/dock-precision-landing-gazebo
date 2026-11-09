@@ -44,7 +44,8 @@ def main():
     running, yaw_align = False, cfg.yaw_align
     arrivals = deque(maxlen=30)
     t_prev, last_print, prev_phase = None, 0.0, seq.phase
-    frames = locked_n = 0
+    frames = locked_n = lost_dumps = 0
+    prev_seen = False
 
     try:
         while True:
@@ -77,6 +78,12 @@ def main():
                 ax, ay = cam.angles(det.center)
             h, h_src = mh.update(veh, det, now)
             hs = max(0.3, h)                                  # olcek hesabi icin alt sinirli
+            if det is None and prev_seen and h < 3.0 and lost_dumps < 5:      # yakinda kayip: teshis icin kareyi kaydet
+                fn = time.strftime('lost_%H%M%S.png')
+                cv2.imwrite(fn, frame)
+                lost_dumps += 1
+                print(f'marker kayboldu (h={h:.2f} m), kare kaydedildi: {fn}')
+            prev_seen = det is not None
 
             # ---- olcum -> KF (sadece kilitli + PnP kalite kapisindan gecen) ----
             if det and det.locked and det.good:

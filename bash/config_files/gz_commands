@@ -1,0 +1,2 @@
+# to move dock itself
+gz topic -t /model/dock_model/cmd_vel -m gz.msgs.Twist -p 'linear: {x: 0.3} angular: {z: 0.1}'
