@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 ArUco ile dock ortalama + inis (kendi PosVel KF, ArduPilot precland KULLANILMAZ).
 
