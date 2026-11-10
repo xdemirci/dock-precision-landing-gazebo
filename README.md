@@ -1,20 +1,27 @@
-https://github.com/user-attachments/assets/9e075b9d-5362-4bec-83c0-95256a364532
+[landing_on_aruco_all.webm](https://github.com/user-attachments/assets/5933c292-b72c-4da7-89fa-2a91683e1948)
 
 [sample_dock_flap.webm](https://github.com/user-attachments/assets/131b41e0-590c-4a33-b58d-ae51f04e3069)
 
 [sample_dock_all_flap.webm](https://github.com/user-attachments/assets/ec00ee02-7f35-4f74-9ee9-6c4fed235482)
 
-[landing_on_aruco_all.webm](https://github.com/user-attachments/assets/5933c292-b72c-4da7-89fa-2a91683e1948)
+https://github.com/user-attachments/assets/9e075b9d-5362-4bec-83c0-95256a364532
 
 # Precision Landing on Dock Station in Gazebo
 
 A quadcopter finds an **ArUco marker** with a **downward camera**, centers over it, descends, lands and disarms. The dock has motorized walls and flaps that open and close. Everything runs in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
 
-**TO REMIND**, ArduPilot's precision landing action is **not used** in this project. The **dock station** model can be builded, configured and changed **on-demand**. One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**. Opening/closing dock station and drone's missions can be tested **together**. The library **OpenCV** and its functions can be tried to achieve best result. **Centering and precision landing algorithms** can be builded and tested in simulation as much as wished. 
+**TO REMIND**, 
+ArduPilot's precision landing action is **not used** in this project. 
+The **dock station** model can be builded, configured and changed **on-demand**. 
+One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**. 
+Opening/closing dock station and drone's missions can be tested **together**. 
+The library **OpenCV** and its functions can be tried to achieve best result. 
+**Centering and precision landing algorithms** can be builded and tested in simulation as much as wished. 
 
-No major changes is needed to test in real after a **properly** working project in the **simulation**. Also it's clear that an onboard companian computer like either Pi or Jetson is **mandatory** for image processing on the drone. Moving this project from simulation(which uses personal computer) to a real onboard computer will not be **challanging** much. The points to take into **consideration** are like **communicating with ground station** to watch the **telemetry** and **view** from camera on-demand. 
-
-The estimation and control code in `scripts/dock_landing` is written from scratch in Python. It borrows ideas and one filter from ArduPilot's precision landing (see [What comes from ArduPilot](#what-comes-from-ardupilot)).
+No major changes is needed to test in real after a **properly** working project in the **simulation**. 
+Also it's clear that an onboard companian computer like either Pi or Jetson is **mandatory** for image processing on the drone. 
+Moving this project from simulation(which uses personal computer) to a real onboard computer will not be **challanging** much. 
+The points to take into **consideration** are like **communicating with ground station** to watch the **telemetry** and **view** from camera on-demand. 
 
 ## How it works
 
@@ -56,6 +63,10 @@ Step by step, one loop iteration (one new camera frame):
 ## Repository layout
 
 ```
+scripts/
+  dock_landing/             main project: detection, estimation, control, mission
+  station_control/          dock generator and the flap control GUI
+  xbox_control/             joystcik ground station used to take off and fly manually
 bash/
   start.sh                  opens each component in its own terminal (check paths before use)
   config_files/
@@ -63,14 +74,12 @@ bash/
     gimbal_config           ArduPilot gimbal parameters (nadir by default)
     gz_commands             example command to move the dock
 models/
-  arucotag1.png             marker texture
-  dock_model ... _4         four docks with 1, 3, 5, 7 m pedestals
-scripts/
-  dock_landing/             main project: detection, estimation, control, mission
-  station_control/          dock generator and the flap control GUI
-  xbox_control/             gamepad ground station used to take off and fly manually
+  arucotag1.png             aruco marker texture
+  dock_model ... _4         four docks with 1,3,5,7m pedestals
+  iris_with_gimbal/	    copter model
+  gimbal_small_3d/	    the gimbal model 
 worlds/
-  dock_world.sdf            world with the drone and four docks
+  dock_world.sdf            default iris runway gazebo world with a quadcopter and four docks with markers inside
 ```
 
 ## Files
@@ -110,10 +119,11 @@ worlds/
 
 | Thread | Work |
 |---|---|
-| Camera thread (daemon) | Reads frames from GStreamer, stores the newest one, wakes the main thread. |
+| Camera thread (daemon worker thread) | Reads frames from GStreamer, stores the newest one, wakes the main thread. |
 | Main thread | Waits for a frame, polls MAVLink (non-blocking), detection, PnP, height, filter, control, mission, HUD drawing, key handling. |
 
 There is no multiprocessing. MAVLink is read in the main thread with `recv_match(blocking=False)`. Blocking pymavlink helpers (such as `motors_disarmed_wait`) are deliberately avoided because they would freeze the video loop.
+Multiprocessing and multithreading will be used later indeed.
 
 A full simulation session is several separate processes:
 
@@ -251,14 +261,6 @@ Docks are generated with `station_control/gen_dock.py`. The models in `models/` 
 ### World
 
 `worlds/dock_world.sdf`: ArduPilot Gazebo style world. Physics step 1 ms, sensors with ogre2, directional sun with shadows, spherical coordinates at the CMAC field (-35.363262, 149.165237, 584 m). The drone `iris_with_gimbal` starts at (0, 0) facing 90 degrees. The four docks stand at (+-5, +-5).
-
-## What comes from ArduPilot
-
-- **`estimator.py`** is a Python port of ArduPilot's `PosVelEKF` (the position and velocity filter used by ArduPilot's precision landing estimator). The predict and fuse equations follow it. The target filter around it (two axes, outlier gate 9, restart after 2 s, process noise 0.05) is chosen in this project and is not claimed to equal ArduPilot's values.
-- **Camera capture** keeps only the newest frame, following the `image_capture` idea noted in the code.
-- **Viewing vector convention** `(-tan(angle_y), tan(angle_x), 1)` in the body frame is taken from ArduPilot's MAVLink precision landing backend, and `los_to_level_xy` uses the same convention.
-- **`ardu_prec_land.py --precland`** and **`prec_land_only_ardu.py`** use ArduPilot's own precision landing: they send `LANDING_TARGET` messages (distance 0, so the height comes from a rangefinder). Needed parameters: `PLND_ENABLED 1`, `PLND_TYPE 1`, `PLND_EST_TYPE 1`, `PLND_LAG 0.15`, `PLND_STRICT 1`, and a rangefinder that sees the dock.
-- Landing state, disarm and velocity control use standard MAVLink: `EXTENDED_SYS_STATE`, `MAV_CMD_COMPONENT_ARM_DISARM`, `SET_POSITION_TARGET_LOCAL_NED`.
 
 ## Observed results
 
