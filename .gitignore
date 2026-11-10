@@ -3,4 +3,7 @@ __pycache__/
 *.log
 *.bin
 *.tlog
+*.png
+*.jpg
+*.jpeg
 .venv/
