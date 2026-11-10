@@ -43,12 +43,12 @@ for _ in range(60):
     t += 0.05
     kf.predict(t)
     kf.update(t, 3.0 + rng.normal(0, 0.1), -2.0 + rng.normal(0, 0.1), 0.1)
-tn, te = kf.pos()
+tn, te = kf.get_position()
 check("KF yakinsama", abs(tn - 3) < 0.07 and abs(te + 2) < 0.07, f"({tn:.3f},{te:.3f})")
-before = kf.rejected
+before = kf.rejected_count
 kf.predict(t + 0.05)
 kf.update(t + 0.05, 9.0, 9.0, 0.1)
-check("KF aykiri olcum reddi", kf.rejected == before + 1)
+check("KF aykiri olcum reddi", kf.rejected_count == before + 1)
 
 # 2) Zincir: piksel -> aci -> yatay cerceve -> NED (yaw/roll/pitch ile)
 cam = pose.CamModel(1920, 1080, 1.151917)

@@ -99,11 +99,11 @@ def main():
 
             # ---- hedef durumu ----
             lost_lim = cfg.final_lost_s if seq.final else cfg.lost_s
-            tracking = kf.ok and (now - kf.t_last < lost_lim) and veh.pos_ok
+            tracking = kf.is_initialized and (now - kf.last_update_time < lost_lim) and veh.pos_ok
             err = rx = ry = None
             en = ee = 0.0
             if tracking:
-                tn, te = kf.pos()
+                tn, te = kf.get_position()
                 en, ee = tn - veh.n, te - veh.e
                 err = math.hypot(en, ee)
                 cy, sy = math.cos(veh.yaw), math.sin(veh.yaw)
@@ -162,13 +162,13 @@ def main():
 
             if tracking and now - last_print > 1.0:
                 last_print = now
-                tn, te = kf.pos()
+                tn, te = kf.get_position()
                 print(f"h={h:.2f}({h_src}) hedef=({tn:+.2f},{te:+.2f}) hata={err:.2f}m "
                       f"mode={veh.mode_name} asama={PHASE_TR[seq.phase]} run={running}")
     finally:
         cam_in.close()
         cv2.destroyAllWindows()
-        print(f"kare: {frames}, kilitli+PnP gecen: {locked_n}, KF reddedilen: {kf.rejected}")
+        print(f"kare: {frames}, kilitli+PnP gecen: {locked_n}, KF reddedilen: {kf.rejected_count}")
 
 
 if __name__ == "__main__":
