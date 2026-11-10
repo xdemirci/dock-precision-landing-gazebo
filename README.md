@@ -10,17 +10,17 @@ https://github.com/user-attachments/assets/9e075b9d-5362-4bec-83c0-95256a364532
 
 A quadcopter finds an **ArUco marker** with a **downward camera**, centers over it, descends, lands and disarms. The dock has motorized walls and flaps that open and close. Everything runs in Gazebo Harmonic with ArduPilot SITL. **Simulation only.**
 
-**TO REMIND**, 
-ArduPilot's precision landing action is **not used** in this project. 
-The **dock station** model can be builded, configured and changed **on-demand**. 
-One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**. 
-Opening/closing dock station and drone's missions can be tested **together**. 
-The library **OpenCV** and its functions can be tried to achieve best result. 
-**Centering and precision landing algorithms** can be builded and tested in simulation as much as wished. 
+**TO REMIND**,  
+ArduPilot's precision landing action is **not used** in this project.  
+The **dock station** model can be builded, configured and changed **on-demand**.  
+One of the important roles of **simulation** is clearly **building pipelines**, testing the **visual process** and the **estimator**.  
+Opening/closing dock station and drone's missions can be tested **together**.  
+The library **OpenCV** and its functions can be tried to achieve best result.  
+**Centering and precision landing algorithms** can be builded and tested in simulation as much as wished.  
 
-No major changes is needed to test in real after a **properly** working project in the **simulation**. 
-Also it's clear that an onboard companian computer like either Pi or Jetson is **mandatory** for image processing on the drone. 
-Moving this project from simulation(which uses personal computer) to a real onboard computer will not be **challanging** much. 
+No major changes is needed to test in real after a **properly** working project in the **simulation**.  
+Also it's clear that an onboard companian computer like either Pi or Jetson is **mandatory** for image processing on the drone.  
+Moving this project from simulation(which uses personal computer) to a real onboard computer will not be **challanging** much.  
 The points to take into **consideration** are like **communicating with ground station** to watch the **telemetry** and **view** from camera on-demand. 
 
 ## How it works
