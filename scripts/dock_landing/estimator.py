@@ -3,7 +3,7 @@ import numpy as np
 
 class PosVelEKF:
     def __init__(self):
-        self.state = np.zeros(2)      # [konum, hız]
+        self.state = np.zeros(2)           # [konum, hız]
         self.covariance = np.zeros(3)      # [P00, P01, P11], kovaryans matrisi elemanları
 
     def initialize(self, posisiton, position_variance, velocity, velocity_variance):
@@ -25,6 +25,8 @@ class PosVelEKF:
             covariance[1] + time_delta * covariance[2],
             covariance[2] + velocity_noise ** 2
         ])
+
+        print(self.state[0])
 
     def calculate_nis(self, measured_position, position_variance): # Normalized Innovation Squared
         residual = measured_position - self.state[0]
@@ -56,38 +58,61 @@ class PosVelEKF:
 
 class TargetFilter:
     """Sabit hedef: N/E icin 2 adet PosVelEKF. Durum = hedefin yerel NED konumu."""
-    NIS_GATE = 9.0
-    LOST_REINIT_S = 2.0
+    NIS_GATE = 9.0       # ayrık değer eleme eşiği(ki-kare istatistiği) 
+    LOST_REINIT_S = 2.0  # veri kesintisinde filtreyi sıfırlama zaman aşımı (sn)
 
     def __init__(self):
-        self.f = [PosVelEKF(), PosVelEKF()]
-        self.ok = False
-        self.t_last = 0.0
-        self.t_pred = 0.0
-        self.rejected = 0
+        # 0: KUZEY ekseni filtresi, 1: DOĞU ekseni filtresi
+        self.filters = [PosVelEKF(), PosVelEKF()]
+        self.is_initialized = False
+        self.last_update_time = 0.0
+        self.last_predict_time = 0.0
+        self.rejected_count = 0
 
-    def predict(self, now):
-        if not self.ok:
+    def predict(self, current_time):
+        if not self.is_initialized:
             return
-        dt = now - self.t_pred
-        self.t_pred = now
-        for k in self.f:
-            k.predict(dt, 0.0, 0.05 * dt)
+        
+        time_delta = current_time - self.last_predict_time
+        self.last_predict_time = current_time
 
-    def update(self, now, tn, te, sigma):
-        var = sigma * sigma
-        if not self.ok or now - self.t_last > self.LOST_REINIT_S:
-            self.f[0].initialize(tn, var, 0.0, 0.05)
-            self.f[1].initialize(te, var, 0.0, 0.05)
-            self.ok, self.t_pred = True, now
+        # sabit hedef varsayımı, her iki eksen için de zaman tahmini
+        for axis_filter in self.filters:
+            axis_filter.predict(
+                time_delta=time_delta,
+                delta_velocity=0.0,
+                velocity_noise=0.05 * time_delta
+            )
+
+    def update(self, current_time, target_north, target_east, measurement_sigma):
+        measurement_variance = measurement_sigma ** 2
+
+        # filtre başlamadıysa, yada uzun süredir veri alınmadıysa yeniden başlat
+        if not self.is_initialized or current_time - self.last_update_time > self.LOST_REINIT_S:
+            self.filters[0].initialize(
+                target_north, measurement_variance, velocity=0.0, velocity_variance=0.05
+            )
+            self.filters[1].initialize(
+                target_east, measurement_variance, velocity=0.0, velocity_variance=0.05
+            )
+            self.is_initialized    = True
+            self.last_predict_time = current_time
+
         else:
-            if self.f[0].calculate_nis(tn, var) + self.f[1].calculate_nis(te, var) > 2 * self.NIS_GATE:
-                self.rejected += 1
+            # NIS testi ile hatalı ölçümleri süz
+            nis_north = self.filters[0].calculate_nis(target_north, measurement_variance)
+            nis_east  = self.filters[1].calculate_nis(target_east, measurement_variance) 
+            if (nis_north + nis_east) > (2 * self.NIS_GATE):
+                self.rejected_count += 1
                 return False
-            self.f[0].fuse_pos(tn, var)
-            self.f[1].fuse_pos(te, var)
-        self.t_last = now
+
+            # ölçümleri filtre durumuyla birleştir (fuse)
+            self.filters[0].fuse_pos(target_north, measurement_variance)
+            self.filters[1].fuse_pos(target_east, measurement_variance)
+
+        self.last_update_time = current_time
         return True
 
-    def pos(self):
-        return self.f[0].state[0], self.f[1].state[0]
+    def get_position(self):
+        """Güncel kuzey ve doğu konum kestirimlerini döndürür."""
+        return self.filters[0].state[0], self.filters[1].state[0]
