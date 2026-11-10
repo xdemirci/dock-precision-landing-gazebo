@@ -125,7 +125,7 @@
       <pose degrees="true">5 5 0 0 0 0</pose>
     </include>
     
-		<include>
+    <include>
       <uri>model://dock_model_2</uri>
       <pose degrees="true">5 -5 0 0 0 0</pose>
     </include>
